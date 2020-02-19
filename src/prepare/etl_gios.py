@@ -72,7 +72,7 @@ def get_pollutant_measures_for_locations(data_file_path: str,
     :param measure: pollutant name
     :param year: year when measures were taken, this allows adjustments regarding data files
     structure changes
-    :return: data frame with aggregated for the pollutant
+    :return: data frame with aggregated values for the pollutants from areas defined by ems_codes
     """
 
     years_conf1 = ['2016', '2017', '2018', '2019']
