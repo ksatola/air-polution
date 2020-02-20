@@ -105,7 +105,7 @@ def get_pollutant_measures_for_locations(data_file_path: str,
     cols = df.columns[1:]
 
     if year in years_conf1:
-        # Replace commas with dots (in all columns but the first one - detatime)
+        # Replace commas with dots (in all columns but the first one - datetime)
         df[cols] = df[cols].apply(lambda x: x.str.replace(',', '.'))
 
     if len(cols) > 0:
