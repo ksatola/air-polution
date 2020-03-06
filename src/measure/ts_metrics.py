@@ -15,7 +15,7 @@ def get_rmse(observed: pd.Series, predicted: pd.Series) -> np.float:
     return rmse
 
 
-def get_mae(observed: pd.Series, predicted: pd.Series) -> np.float:
+def get_mae_pct_change(observed: pd.Series, predicted: pd.Series) -> np.float:
     """
     Calculates MAE - Mean Absolute Error between two series as percentage change
     :param observed: pandas series with observed values (the truth)
