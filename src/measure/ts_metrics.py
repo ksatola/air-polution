@@ -3,6 +3,17 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 
 
+def get_mse(observed: pd.Series, predicted: pd.Series) -> np.float:
+    """
+    Calculates MSE - Mean Squared Error between two series
+    :param observed: pandas series with observed values (the truth)
+    :param predicted: pandas series with predicted values
+    :return: MSE value
+    """
+    mse = round(mean_squared_error(observed, predicted), 4)
+    return mse
+
+
 def get_rmse(observed: pd.Series, predicted: pd.Series) -> np.float:
     """
     Calculates RMSE - Root Mean Squared Error between two series
@@ -13,6 +24,16 @@ def get_rmse(observed: pd.Series, predicted: pd.Series) -> np.float:
     mse = mean_squared_error(observed, predicted)
     rmse = round(np.sqrt(mse), 4)
     return rmse
+
+
+def get_mae(observed: pd.Series, predicted: pd.Series) -> np.float:
+    """
+    Calculates MAE - Mean Absolute Error between two series
+    :param observed: pandas series with observed values (the truth)
+    :param predicted: pandas series with predicted values
+    :return: MAE value
+    """
+    return round(abs(observed - predicted).mean(), 4)
 
 
 def get_mae_pct_change(observed: pd.Series, predicted: pd.Series) -> np.float:
