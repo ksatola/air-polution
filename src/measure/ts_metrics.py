@@ -60,7 +60,26 @@ def get_hit_rate(observed: pd.Series, predicted: pd.Series) -> np.float:
     pred_pct.columns = ['Observed', 'Predicted']
 
     # Mark rows with a move in the same direction
-    pred_pct['Hit'] = np.where(np.sign(pred_pct['Observed']) == np.sign(pred_pct['Predicted']), 1, 0)
+    pred_pct['Hit'] = np.where(np.sign(pred_pct['Observed']) == np.sign(pred_pct['Predicted']), 1,
+                               0)
 
     # Returm the hit rate
     return round((pred_pct['Hit'].sum() / pred_pct['Hit'].count()) * 100, 2)
+
+
+def get_model_power(observed: pd.Series, predicted: pd.Series) -> (float, float):
+    """
+    Measures model power on the final forecast values (not residuals)
+    :param observed: pandas series with observed values (the truth)
+    :param predicted: pandas series with predicted values
+    :return: tuple with RMSE and Pearson correlation between observed and predicted
+    """
+    # Measure performance
+    rmse = get_rmse(observed, predicted)
+    #print(f'Naive forecast RMSE: {rmse:.4f}')
+
+    # Measure model power
+    r = observed.pct_change().corr(predicted.pct_change())
+    #print(f'Naive forecast correlation coefficient of the observed-to-predicted values: {r:.4f}')
+
+    return rmse, r

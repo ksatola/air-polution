@@ -13,3 +13,4 @@ def adfuller_test(data: pd.Series, alpha: float = 0.5) -> None:
         print('The time series has a unit root, so it is non-stationary. (fail to reject H0)')
     else:
         print('The time series does not have a unit root, so it is stationary (reject H0)')
+
