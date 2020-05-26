@@ -97,3 +97,4 @@ notebooks/*
 data/*
 agh/Final_v*
 agh/Presentation.ipynb
+*.log
