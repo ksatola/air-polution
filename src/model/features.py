@@ -25,7 +25,7 @@ def build_datetime_features(data: pd.DataFrame, dt_col_name: str) -> pd.DataFram
 
     # Build basic time features
     # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DatetimeIndex.html
-    df['year'] = pd.DatetimeIndex(df[dt_col_name]).year
+    #df['year'] = pd.DatetimeIndex(df[dt_col_name]).year # year is jus like an identifier
     df['month'] = pd.DatetimeIndex(df[dt_col_name]).month
     df['day'] = pd.DatetimeIndex(df[dt_col_name]).day
     df['hour'] = pd.DatetimeIndex(df[dt_col_name]).hour
