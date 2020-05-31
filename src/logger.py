@@ -15,7 +15,8 @@ formatter = logging.Formatter(
     fmt='%(filename)s | %(lineno)d | %(funcName)s | %(asctime)s | %(levelname)s: %(message)s',
     datefmt='%d-%b-%y %H:%M:%S'
 )
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 logFilePath = "air-pollution.log"
 file_handler = logging.handlers.RotatingFileHandler(

@@ -8,5 +8,5 @@ from .ts_plots import (
 
 from .diagnostic import (
     plot_observations_to_predictions_relationship,
-    fit_theoretical_dist_and_plot
+    fit_theoretical_dist_and_plot,
 )
