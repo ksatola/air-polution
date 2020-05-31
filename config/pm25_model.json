@@ -1,36 +1,4 @@
 {
-  "base_dir": "/data/analytical_view/pssitb/pssitb_history",
-  "target_variables": [
-    "i3--XX--035MalhoPerten_WaterContent.Portion1.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion2.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion3.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion4.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion5.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion6.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion7.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion8.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion9.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion10.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion11.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion12.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion13.Average",
-    "i3--XX--035MalhoPerten_WaterContent.Portion14.Average"
-  ],
-  "remove_names": [
-    "WaterContent.Portion",
-    "Moisture",
-    "Thickness"
-  ],
-  "categorical_names": [
-    "IPC_RealTimeValues.00.PONumber",
-    "LastCompletedMB_Rep.BobbinN"
-  ],
-  "bagging_model": "True",
-  "base_models_num": 5,
-  "tune_boost_round": "True",
-  "num_splits": 5,
-  "output_dir": "/data/model_moisture/",
-  "path_to_sensor_specification_file": "/data/raw_data/",
-  "sensor_specification_file": "Sensor_info_v2.csv"
+  "data_folder": "/Users/ksatola/Documents/git/air-polution/agh/data/"
 }
 
