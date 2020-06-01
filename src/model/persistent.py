@@ -6,7 +6,7 @@ from plot import (
     plot_observations_to_predictions_relationship
 )
 
-
+#TODO: this function is for one-point forecast only
 def ts_naive_forecast(data: pd.Series,
                       train_test_split_ratio: float = 0.8,
                       num_points_test_split: int = 0,

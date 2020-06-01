@@ -16,8 +16,8 @@ def load_data(data_file_path: str) -> None:
     return df
 
 
-def get_data_for_modelling(model_type: str = 'ml',
-                           forecast_type: str = 'h') -> pd.DataFrame:
+def get_pm25_data_for_modelling(model_type: str = 'ml',
+                                forecast_type: str = 'h') -> pd.DataFrame:
     """
     Reads HDF file with analytical view prepared for time series or machine learning modelling.
     :param model_type: 'ts' for time series analytical model or 'ml' for machine learning model
@@ -67,3 +67,68 @@ def split_df_for_ml_modelling(data: pd.DataFrame, target_col: str = 't', train_s
                                                         test_size=train_size,
                                                         random_state=123)
     return X_train, X_test, y_train, y_test
+
+
+def split_df_for_ts_modelling_percentage(data: pd.DataFrame,
+                                         train_size: float = 0.8) -> (pd.DataFrame, pd.DataFrame):
+    """
+    Uses FIRST train_size of data for training / model parameters tuning and the later data for
+    testing
+    :param data: pandas DataFrame
+    :param train_size: train/test split ratio, 0-1, specifies how much data should be but in the
+    train data set
+    :return: tuple of two pandas DataFrames: df_train and df_test
+    """
+
+    # Use FIRST train_size of data for training / model parameters tuning and the later data for
+    # testing
+    df_train = data[:int(len(data) * train_size)]
+    df_test = data[int(len(data) * train_size):]
+    # or
+    # df_train = data.iloc[:-int(len(data) * 1-train_size)]
+    # df_test = data.iloc[-int(len(data) * 1-train_size):]
+    # or
+    # X = data.values
+    # train_size = int(len(X) * train_size)
+    # df_train, df_test = X[0:train_size], X[train_size:len(X)]
+
+    logger.info(f'Observations: {(len(data))}')
+    logger.info(f'Training Observations: {(len(df_train))}')
+    logger.info(f'Testing Observations: {(len(df_test))}')
+
+    logger.info(f"{data.shape}, {df_train.shape}, {df_test.shape}, "
+                f"{df_train.shape[0] + df_test.shape[0]}")
+
+    return df_train, df_test
+
+
+def split_df_for_ts_modelling_date_range(data: pd.DataFrame,
+                                         train_range_from: str = '2008-01-01',
+                                         train_range_to: str = '2016-12-31',
+                                         test_range_from: str = '2017-01-01',
+                                         test_range_to: str = None) -> (pd.DataFrame,
+                                                                        pd.DataFrame):
+    """
+    Splits time series dataset based on dates as index
+    :param data: pandas DataFrame with times series data (datetime format in the data frame's
+    index)
+    :param train_range_from: datetime string compliant with the dataset index format
+    :param train_range_to: datetime string compliant with the dataset index format
+    :param test_range_from: datetime string compliant with the dataset index format
+    :param test_range_to: datetime string compliant with the dataset index format
+    :return:
+    """
+    df = data.copy()
+    df.index = pd.to_datetime(df.index)
+
+    df_train = df[train_range_from:train_range_to].copy()
+    df_test = df[test_range_from:test_range_to].copy()
+
+    logger.info(f'Observations: {(len(data))}')
+    logger.info(f'Training Observations: {(len(df_train))}')
+    logger.info(f'Testing Observations: {(len(df_test))}')
+
+    logger.info(f"{data.shape}, {df_train.shape}, {df_test.shape}, "
+                f"{df_train.shape[0] + df_test.shape[0]}")
+
+    return df_train, df_test
