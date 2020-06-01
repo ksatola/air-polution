@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 from statsmodels.tsa.seasonal import STL
 from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.seasonal import DecomposeResult
 
 
 def plot_train_test_predicted(train: pd.Series,
@@ -57,8 +58,7 @@ def plot_observed_vs_predicted(observed: pd.Series,
     plt.show()
 
 
-def plot_stl(data: pd.Series):  # -> DecomposeResult:
-
+def plot_stl(data: pd.Series, period: int = 365, low_pass: int = 367) -> DecomposeResult:
     # TODO: dac opis
 
     # Seasonal-Trend decomposition - LOESS (STL)
@@ -66,7 +66,7 @@ def plot_stl(data: pd.Series):  # -> DecomposeResult:
     # update with what this function returns
     # https://robjhyndman.com/hyndsight/seasonal-periods/
 
-    stl = STL(data, period=60)
+    stl = STL(data, period=period, low_pass=low_pass)
     result = stl.fit()
 
     fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(20, 16))
@@ -94,6 +94,27 @@ def plot_decompose(data: pd.Series):
     result.trend.plot(ax=ax2)
     result.seasonal.plot(ax=ax3)
     result.resid.plot(ax=ax4)
-    plt.show();
+    plt.show()
 
     return result
+
+
+def plot_before_after(data_before: pd.Series,
+                      data_after: pd.Series,
+                      label_before: str = "Before",
+                      label_after: str = "After") -> None:
+    """
+    Plots two charts for comparison.
+    :param data_before: pandas Series
+    :param data_after: pandas Series
+    :param label_before: title for the first plot
+    :param label_after: title for the second plot
+    :return: None
+    """
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(20, 16))
+    ax1.set_title(label_before, loc='left')
+    data_before.plot(ax=ax1)
+    ax2.set_title(label_after, loc='left')
+    data_after.plot(ax=ax2)
+    plt.show()
