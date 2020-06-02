@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from statsmodels.tsa.seasonal import STL
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.seasonal import DecomposeResult
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
 
 def plot_train_test_predicted(train: pd.Series,
@@ -118,3 +119,25 @@ def plot_before_after(data_before: pd.Series,
     ax2.set_title(label_after, loc='left')
     data_after.plot(ax=ax2)
     plt.show()
+
+
+#TODO: opisac
+def plot_ts_corr(xt: pd.Series, nlag: int =30, fig_size=(20, 10)) -> None:
+    # Function to plot signal, ACF and PACF
+    if not isinstance(xt, pd.Series):
+        xt = pd.Series(xt)
+    plt.figure(figsize=fig_size)
+    layout = (2, 2)
+
+    # Assign axes
+    ax_xt = plt.subplot2grid(layout, (0, 0), colspan=2)
+    ax_acf = plt.subplot2grid(layout, (1, 0))
+    ax_pacf = plt.subplot2grid(layout, (1, 1))
+
+    # Plot graphs
+    xt.plot(ax=ax_xt)
+    ax_xt.set_title('Time Series')
+    plot_acf(xt, lags=50, ax=ax_acf)
+    plot_pacf(xt, lags=50, ax=ax_pacf)
+    plt.tight_layout()
+    return None

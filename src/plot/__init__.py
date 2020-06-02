@@ -5,7 +5,8 @@ from .ts_plots import (
     plot_observed_vs_predicted,
     plot_stl,
     plot_decompose,
-    plot_before_after
+    plot_before_after,
+    plot_ts_corr
 )
 
 from .diagnostic import (
