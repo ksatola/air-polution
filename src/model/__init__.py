@@ -18,8 +18,11 @@ from .features import (
     build_datetime_features
 )
 
+from .regression import (
+    get_models_for_regression
+)
+
 from .ensemble import (
-    get_ensemble_models_for_regression,
     get_analytical_view_for_meta_model,
     fit_base_models,
     fit_meta_model,

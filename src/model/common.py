@@ -49,7 +49,7 @@ def split_df_for_ml_modelling(data: pd.DataFrame, target_col: str = 't', train_s
         -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
     Splits pandas DataFrame (columns as features, rows as observations) into train/test split 
-    data frames deparately for independent and dependent features. 
+    data frames separately for independent and dependent features.
     :param data: pandas DataFrame
     :param target_col: name of the target column
     :param train_size: train/test split ratio, 0-1, specifies how much data should be but in the

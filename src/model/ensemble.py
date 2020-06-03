@@ -17,24 +17,6 @@ import pandas as pd
 from measure import get_rmse
 
 
-def get_ensemble_models_for_regression() -> list:
-    """
-    Defines a list of regression models to be used in ensemble modelling.
-    :return: list of base sklearn models
-    """
-    models = [LinearRegression(),
-              ElasticNet(),
-              # SVR(gamma='scale'),
-              # DecisionTreeRegressor(),
-              # KNeighborsRegressor(),
-              # AdaBoostRegressor(),
-              # BaggingRegressor(n_estimators=10),
-              # RandomForestRegressor(n_estimators=10),
-              # ExtraTreesRegressor(n_estimators=10)
-              ]
-    return models
-
-
 def get_analytical_view_for_meta_model(X_train: pd.DataFrame,
                                        y_train: pd.DataFrame,
                                        models: list,
