@@ -132,3 +132,31 @@ def split_df_for_ts_modelling_date_range(data: pd.DataFrame,
                 f"{df_train.shape[0] + df_test.shape[0]}")
 
     return df_train, df_test
+
+
+def get_df_for_lags_columns(data: pd.DataFrame, col_name: str, n_lags: int = 1,
+                            remove_nans: bool = False) -> pd.DataFrame:
+    """
+    Builds n-lags data frame for a time series specified as a data frame and one of its column
+    names.
+    :param data: data frame with at least one time series column
+    :param col_name: time series column
+    :param n_lags: number of lag columns to be created
+    :param remove_nans: if True, NaNs from n_lags first columns created as s result of shifting
+    data are removed, the number of rows of resulting data set is dimished by the number of n_lags
+    :return: data frame with the origin time sereis data names as 't' and n_lags columns
+    """
+    df = pd.DataFrame()
+
+    # Create column t
+    df['t'] = data[col_name].copy()
+
+    # Create lag columns
+    for i in range(1, n_lags + 1):
+        df['t-' + str(i)] = df['t'].shift(i)
+
+    if remove_nans:
+        # Remove NaNs
+        df = df.iloc[n_lags:]
+
+    return df

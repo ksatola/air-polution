@@ -39,7 +39,8 @@ def plot_observed_vs_predicted(observed: pd.Series,
                                num_points: int,
                                title: str = 'Observed vs. Predicted',
                                label_observed: str = 'Observed',
-                               label_predicted: str = 'Predicted') -> None:
+                               label_predicted: str = 'Predicted',
+                               save_path: str = '') -> None:
     """
     Plots a number of points back from the last time series point as a zoomed view on observed
     and predicted data.
@@ -49,6 +50,8 @@ def plot_observed_vs_predicted(observed: pd.Series,
     :param title: plot title
     :param label_observed: label for the observed data
     :param label_predicted: label for the predicted data
+    :param save_path: if specified, the plot will be saved to the specified location. The file
+    format is PNG if not specified otherwise
     :return: None
     """
     plt.figure(figsize=(20, 10))
@@ -56,6 +59,48 @@ def plot_observed_vs_predicted(observed: pd.Series,
     plt.plot(predicted[-num_points:], label=label_predicted, c='green')
     plt.title(title)
     plt.legend(loc='best')
+
+    if len(save_path) > 0:
+        plt.savefig(save_path)
+
+    plt.show()
+
+
+def plot_observed_vs_predicted_with_error(observed: pd.Series,
+                                          predicted: pd.Series,
+                                          error: pd.Series,
+                                          num_points: int,
+                                          title: str = 'Observed vs. Predicted with Error',
+                                          label_observed: str = 'Observed',
+                                          label_predicted: str = 'Predicted',
+                                          label_error: str = 'Mean RMSE',
+                                          save_path: str = '') -> None:
+    """
+    Plots a number of points back from the last time series point as a zoomed view on observed
+    and predicted data.
+    https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html
+    :param observed: observed data
+    :param predicted: predicted data
+    :param error: error data
+    :param num_points: number of points to draw on the horizontal axis
+    :param title: plot title
+    :param label_observed: label for the observed data
+    :param label_predicted: label for the predicted data
+    :param label_error: label for the error data
+    :param save_path: if specified, the plot will be saved to the specified location. The file
+    format is PNG if not specified otherwise
+    :return: None
+    """
+    plt.figure(figsize=(20, 10))
+    plt.plot(observed.iloc[-num_points:], label=label_observed, c='orange')
+    plt.plot(predicted[-num_points:], label=label_predicted, c='green')
+    plt.plot(error[-num_points:], label=label_error, c='red', linestyle='dashed')
+    plt.title(title)
+    plt.legend(loc='best')
+
+    if len(save_path) > 0:
+        plt.savefig(save_path)
+
     plt.show()
 
 
@@ -121,8 +166,8 @@ def plot_before_after(data_before: pd.Series,
     plt.show()
 
 
-#TODO: opisac
-def plot_ts_corr(xt: pd.Series, nlag: int =30, fig_size=(20, 10)) -> None:
+# TODO: opisac
+def plot_ts_corr(xt: pd.Series, nlag: int = 30, fig_size=(20, 10)) -> None:
     # Function to plot signal, ACF and PACF
     if not isinstance(xt, pd.Series):
         xt = pd.Series(xt)
