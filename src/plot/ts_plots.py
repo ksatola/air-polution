@@ -40,6 +40,7 @@ def plot_observed_vs_predicted(observed: pd.Series,
                                title: str = 'Observed vs. Predicted',
                                label_observed: str = 'Observed',
                                label_predicted: str = 'Predicted',
+                               show_grid: bool = True,
                                save_path: str = '') -> None:
     """
     Plots a number of points back from the last time series point as a zoomed view on observed
@@ -50,11 +51,13 @@ def plot_observed_vs_predicted(observed: pd.Series,
     :param title: plot title
     :param label_observed: label for the observed data
     :param label_predicted: label for the predicted data
+    :param show_grid: shows grid if True
     :param save_path: if specified, the plot will be saved to the specified location. The file
     format is PNG if not specified otherwise
     :return: None
     """
     plt.figure(figsize=(20, 10))
+    plt.grid(show_grid)
     plt.plot(observed.iloc[-num_points:], label=label_observed, c='orange')
     plt.plot(predicted[-num_points:], label=label_predicted, c='green')
     plt.title(title)
@@ -74,6 +77,7 @@ def plot_observed_vs_predicted_with_error(observed: pd.Series,
                                           label_observed: str = 'Observed',
                                           label_predicted: str = 'Predicted',
                                           label_error: str = 'Mean RMSE',
+                                          show_grid: bool = True,
                                           save_path: str = '') -> None:
     """
     Plots a number of points back from the last time series point as a zoomed view on observed
@@ -87,11 +91,13 @@ def plot_observed_vs_predicted_with_error(observed: pd.Series,
     :param label_observed: label for the observed data
     :param label_predicted: label for the predicted data
     :param label_error: label for the error data
+    :param show_grid: shows grid if True
     :param save_path: if specified, the plot will be saved to the specified location. The file
     format is PNG if not specified otherwise
     :return: None
     """
     plt.figure(figsize=(20, 10))
+    plt.grid(show_grid)
     plt.plot(observed.iloc[-num_points:], label=label_observed, c='orange')
     plt.plot(predicted[-num_points:], label=label_predicted, c='green')
     plt.plot(error[-num_points:], label=label_error, c='red', linestyle='dashed')
