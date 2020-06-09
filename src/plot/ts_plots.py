@@ -57,10 +57,15 @@ def plot_observed_vs_predicted(observed: pd.Series,
     :return: None
     """
     plt.figure(figsize=(20, 10))
+    # axes = plt.gca()  # get current axes
+    # axes.set_xlim([xmin, xmax])
+    # axes.set_ylim([0, 160])
     plt.grid(show_grid)
     plt.plot(observed.iloc[-num_points:], label=label_observed, c='orange')
     plt.plot(predicted[-num_points:], label=label_predicted, c='green')
     plt.title(title)
+    plt.xlabel('Time')
+    plt.ylabel('[µg/m3]')
     plt.legend(loc='best')
 
     if len(save_path) > 0:
@@ -97,11 +102,16 @@ def plot_observed_vs_predicted_with_error(observed: pd.Series,
     :return: None
     """
     plt.figure(figsize=(20, 10))
+    # axes = plt.gca() # get current axes
+    # axes.set_xlim([xmin, xmax])
+    # axes.set_ylim([0, 160])
     plt.grid(show_grid)
     plt.plot(observed.iloc[-num_points:], label=label_observed, c='orange')
     plt.plot(predicted[-num_points:], label=label_predicted, c='green')
     plt.plot(error[-num_points:], label=label_error, c='red', linestyle='dashed')
     plt.title(title)
+    plt.xlabel('Time')
+    plt.ylabel('[µg/m3]')
     plt.legend(loc='best')
 
     if len(save_path) > 0:

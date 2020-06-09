@@ -134,6 +134,38 @@ def split_df_for_ts_modelling_date_range(data: pd.DataFrame,
     return df_train, df_test
 
 
+def split_df_for_ts_modelling_offset(data: pd.DataFrame,
+                                     cut_off_offset: int,
+                                     period: str) -> (
+        pd.DataFrame, pd.DataFrame):
+    """
+    Splits time series dataset based on number of observation point counted backwards from the last
+    / newest observation.
+    :param data: pandas DataFrame with times series data (datetime format in the data frame's
+    index)
+    :cut_off_offset: number of observation point counted backwards from the last / newest observation
+    :param period: a frequency string as defined here:
+    https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
+    :return: tuple of 2 pandas DataFrames, one with training data, another with test data
+    """
+    df = data.copy()
+    df.dropna(inplace=True)
+    if period:
+        df.index = pd.DatetimeIndex(df.index).to_period(period)
+
+    df_train = df[1:len(df) - cut_off_offset]
+    df_test = df[len(df) - cut_off_offset:]
+
+    logger.info(f'Observations: {(len(data))}')
+    logger.info(f'Training Observations: {(len(df_train))}')
+    logger.info(f'Testing Observations: {(len(df_test))}')
+
+    logger.info(f"{data.shape}, {df_train.shape}, {df_test.shape}, "
+                f"{df_train.shape[0] + df_test.shape[0]}")
+
+    return df_train, df_test
+
+
 def get_df_for_lags_columns(data: pd.DataFrame, col_name: str, n_lags: int = 1,
                             remove_nans: bool = False) -> pd.DataFrame:
     """

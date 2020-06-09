@@ -1,7 +1,26 @@
 import itertools
 import pandas as pd
+from logger import logger
 
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+
+def predict_ar(X: list, coef: list) -> float:
+    """
+    Forecasts a value using AR() model based on a list of previous values and a list of model
+    parameters (as returned by statsmodels models).
+    :param X: historical observations
+    :param coef: constant and auto-regressive coefficients
+    :return: predicted value
+    """
+    yhat = 0.0
+    logger.debug(f'coef -> {coef}')
+    logger.debug(f'X -> {X}')
+    for i in range(1, len(coef)):
+        # X values must be applied backwards as we travel back in the past
+        yhat += coef[i] * X[-i]
+        logger.debug(coef[i], X[i], yhat)
+    return yhat + coef[0]
 
 
 def get_best_arima_params_for_time_series(data: pd.Series,
@@ -9,7 +28,7 @@ def get_best_arima_params_for_time_series(data: pd.Series,
                                           max_param_range_p: int = 5,
                                           max_param_range_d: int = 2,
                                           max_param_range_q: int = 5) -> ((int, int, int),
-                                                                        float):
+                                                                          float):
     """
     Prepares a combinations list of p,d,g ARIMA or SARIMA parameters within specified range and
     searches for their best combination for provided time series data.
@@ -21,9 +40,9 @@ def get_best_arima_params_for_time_series(data: pd.Series,
     :return: best found p, d, q parameters of ARIMA
     """
     # Prepares a combinations list of p,d,g ARIMA parameters within specified range
-    p = range(0, max_param_range_p+1)
-    d = range(0, max_param_range_d+1)
-    q = range(0, max_param_range_q+1)
+    p = range(0, max_param_range_p + 1)
+    d = range(0, max_param_range_d + 1)
+    q = range(0, max_param_range_q + 1)
     pdq = list(itertools.product(p, d, q))
 
     # https://www.statsmodels.org/dev/generated/statsmodels.tsa.statespace.sarimax.SARIMAX.html
@@ -77,3 +96,5 @@ def get_best_arima_params_for_time_series(data: pd.Series,
         print(f'Best model is ARIMA{best_res[0]} with AIC of {best_aic}')
 
     return best_res
+
+
