@@ -3,7 +3,7 @@ from .ts_metrics import (
     get_rmse,
     get_mae,
     get_hit_rate,
-    get_model_power,
+    get_model_power
 )
 
 from .ml_metrics import (
@@ -12,6 +12,8 @@ from .ml_metrics import (
 
 from .validation import (
     walk_forward_ts_model_validation,
+    walk_forward_ts_model_validation2,
+    walk_forward_ref_model_validation,
     get_mean_folds_rmse_for_n_prediction_points,
     prepare_data_for_visualization
 )

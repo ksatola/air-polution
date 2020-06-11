@@ -1,8 +1,51 @@
 import itertools
 import pandas as pd
+import numpy as np
 from logger import logger
 
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+
+def fit_model(endog: list, p: int = 0, d: int = 0, q: int = 0):
+    """
+    Fits SARIMA model using statsmodels SARIMAX function.
+    :param endog: data for the model to fit in
+    :param p: AR order
+    :param d: number of differencing operations to perform
+    :param q: MA order
+    :return: fitted model object
+    """
+    # https://stackoverflow.com/questions/54136280/sarimax-python-np-linalg-linalg-linalgerror-lu-decomposition-error
+    model = SARIMAX(endog=endog, order=(p, d, q), initialization='approximate_diffuse')
+    model_fitted = model.fit()
+    return model_fitted
+
+
+def predict_ts(x: list, coef: list) -> float:
+    """
+    Forecasts value based on AR() or MA() model (depending if historical observations or error
+    residuals are provided as x).
+    :param x: historical observations (AR) or error residuals (MA)
+    :param coef: constant and auto-regressive/moving average coefficients
+    :return: predicted value
+    """
+    yhat = 0.0
+    for i in range(1, len(coef) + 1):
+        yhat += coef[i - 1] * x[-i]
+    return yhat
+
+
+def difference(x: list):
+    """
+    Calculates differences for a list of values.
+    :param x: input data
+    :return: a list of i-1 differences
+    """
+    diff = []
+    for i in range(1, len(x)):
+        value = x[i] - x[i - 1]
+        diff.append(value)
+    return np.array(diff)
 
 
 def predict_ar(X: list, coef: list) -> float:
@@ -96,5 +139,3 @@ def get_best_arima_params_for_time_series(data: pd.Series,
         print(f'Best model is ARIMA{best_res[0]} with AIC of {best_aic}')
 
     return best_res
-
-

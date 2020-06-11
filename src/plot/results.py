@@ -1,4 +1,5 @@
 from measure import prepare_data_for_visualization
+import pandas as pd
 
 from logger import logger
 
@@ -15,7 +16,8 @@ def visualize_results(show_n_points_of_forecasts: list,
                       fold_results: list,
                       n_pred_points: int,
                       cut_off_offset: int,
-                      model_name: str):
+                      model_name: str,
+                      timestamp: str):
     """
 
     :param show_n_points_of_forecasts:
@@ -28,6 +30,13 @@ def visualize_results(show_n_points_of_forecasts: list,
     :param model_name:
     :return:
     """
+
+    # We need to convert index for plotting from
+    # dtype='period[D]' or dtype='period[H]' to dtype='datetime64[ns]'
+    # https://stackoverflow.com/questions/29394730/converting-periodindex-to-datetimeindex
+    for i in range(0, len(fold_results)):
+        if not isinstance(fold_results[i].index, pd.DatetimeIndex):
+            fold_results[i].index = fold_results[i].index.to_timestamp()
 
     k = 0
 
@@ -46,14 +55,14 @@ def visualize_results(show_n_points_of_forecasts: list,
         for start_end_date in start_end_dates:
 
             # Make some space between plots
-            print(2*'\n')
+            print(2 * '\n')
 
             # Zooming
             start_date = start_end_date[0]
             end_date = start_end_date[1]
 
             title = f'{model_name} - predictions at lag+{show_n_points_of_forecasts[k]:02}'
-            save_path = f'{base_file_path}_{k + 1:02}_lag-{show_n_points_of_forecasts[i]:02}.png'
+            save_path = f'{base_file_path}_{k + 1:02}_lag-{show_n_points_of_forecasts[i]:02}_{timestamp}.png'
 
             # Plot
             if plot_types[i] == 0:

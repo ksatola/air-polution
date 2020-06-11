@@ -1,10 +1,16 @@
 """This package is dedicated for modeling."""
 
-from .persistent import ts_naive_forecast
+#from .persistent import (
+    #ts_naive_forecast,
+    #sav_fit
+#)
 
 from .arima import (
     get_best_arima_params_for_time_series,
-    predict_ar
+    predict_ar,
+    predict_ts,
+    fit_model,
+    difference
 )
 
 from .common import (
