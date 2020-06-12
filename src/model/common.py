@@ -45,6 +45,42 @@ def get_pm25_data_for_modelling(model_type: str = 'ml',
     return df
 
 
+def split_df_for_ml_modelling_offset(data: pd.DataFrame,
+                                     target_col: str = 't',
+                                     cut_off_offset: int = 365) \
+        -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
+    """
+
+    :param data:
+    :param target_col:
+    :param cut_off_offset:
+    :return:
+    """
+    """
+    XXXXXXXXX
+    Splits pandas DataFrame (columns as features, rows as observations) into train/test split 
+    data frames separately for independent and dependent features.
+    :param data: pandas DataFrame
+    :param target_col: name of the target column
+    :param train_size: train/test split ratio, 0-1, specifies how much data should be but in the
+    train data set
+    :return: tuple of four pandas DataFrames: X_train, X_test, y_train, y_test
+    """
+
+    # Take entire dataset and split it to train/test
+    # according to train_test_split_position using cut_off_offset
+    train_test_split_position = int(len(data) - cut_off_offset)
+
+    X_train = data[0:train_test_split_position].copy()
+    X_test = data[train_test_split_position:].copy()
+
+    # Split datasets into independent variables dataset columns and dependent variable column
+    y_train = X_train.pop(target_col)
+    y_test = X_test.pop(target_col)
+
+    return X_train, X_test, y_train, y_test
+
+
 def split_df_for_ml_modelling(data: pd.DataFrame, target_col: str = 't', train_size: float = 0.8) \
         -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
@@ -139,11 +175,12 @@ def split_df_for_ts_modelling_offset(data: pd.DataFrame,
                                      period: str) -> (
         pd.DataFrame, pd.DataFrame):
     """
-    Splits time series dataset based on number of observation point counted backwards from the last
-    / newest observation.
+    Splits time series dataset based on number of observation point counted backwards
+    from the last newest observation.
     :param data: pandas DataFrame with times series data (datetime format in the data frame's
     index)
-    :cut_off_offset: number of observation point counted backwards from the last / newest observation
+    :cut_off_offset: number of observation point counted backwards from the last / newest
+    observation
     :param period: a frequency string as defined here:
     https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
     :return: tuple of 2 pandas DataFrames, one with training data, another with test data

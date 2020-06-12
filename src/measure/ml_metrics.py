@@ -1,7 +1,8 @@
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import *
+#from sklearn.model_selection import GridSearchCV
+#from sklearn.metrics import *
+from logger import logger
 
 import pandas as pd
 
@@ -32,6 +33,7 @@ def score_ml_models(X_train: pd.DataFrame,
 
     for name, model in models:
         names.append(name)
+        logger.info(f'Scoring {name} started')
         try:
         # Not all scoring metrics are available for all models
             kfold = KFold(n_splits=n_splits, random_state=seed)

@@ -20,7 +20,8 @@ from .common import (
     split_df_for_ts_modelling_percentage,
     split_df_for_ts_modelling_date_range,
     get_df_for_lags_columns,
-    split_df_for_ts_modelling_offset
+    split_df_for_ts_modelling_offset,
+    split_df_for_ml_modelling_offset
 )
 
 from .features import (
@@ -29,7 +30,9 @@ from .features import (
 )
 
 from .regression import (
-    get_models_for_regression
+    get_models_for_regression,
+    perform_grid_search_cv,
+    perform_random_search_cv
 )
 
 from .ensemble import (

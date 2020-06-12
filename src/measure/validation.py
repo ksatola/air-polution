@@ -5,6 +5,8 @@ from logger import logger
 
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 
+from sklearn.base import BaseEstimator
+
 # from model.persistent import (
 # ts_naive_forecast,
 # sav_fit
@@ -35,6 +37,175 @@ def persistence_fit(data: pd.Series) -> float:
     return model_fitted
 
 
+# TODO: unify with validation methods for other kinds of models (use JSON configs as function params)
+def walk_forward_ml_model_validation(data: pd.DataFrame,
+                                     # col_name: str,
+                                     # model_type: str,
+                                     model: BaseEstimator,
+                                     target_col: str,
+                                     cut_off_offset: int = 365,
+                                     n_pred_points: int = 1,
+                                     n_folds: int = -1,
+                                     n_lags: int = 4):
+    """
+    XXXXXXXXXXXXX ML models
+
+n_lags: number of t-n columns in a dataset used for validation
+    """
+
+    # TODO
+    # There is a function in w common.py -> split_df_for_ml_modelling_offset (do similar for ts)
+    # walk_forward_ref_model_validation
+
+    train_test_split_position = int(len(data) - cut_off_offset)
+    max_n_folds = len(data) - cut_off_offset - n_pred_points
+
+    if n_folds < 1:
+        last_n_folds_pos = len(data) - n_pred_points
+    else:
+        if n_folds >= max_n_folds:
+            last_n_folds_pos = max_n_folds - 1
+
+    # print(f'last_n_folds_pos -> {last_n_folds_pos}')
+
+    # A list of data frames with results from each fold n_pred_points predictions
+    fold_results = []
+
+    fold_nums = cut_off_offset  # last_n_folds_pos - train_test_split_position
+    fold_num = 0
+    dt_format = "%Y-%m-%d_%H-%M-%S"
+
+    # Frequency of displaying diagnostic information about validation process
+    if cut_off_offset >= 500 and cut_off_offset < 1000:
+        divider = 20
+    elif cut_off_offset >= 1000 and cut_off_offset < 10000:
+        divider = 100
+    elif cut_off_offset >= 10000:
+        divider = 1000
+    else:
+        divider = 10
+
+    logger.info(f'{type(model).__name__, model} model validation started')
+
+    # For each data point in the test part
+    for i in range(train_test_split_position, last_n_folds_pos):
+
+        # print(f'i -> {i}')
+        # print(f'train_test_split_position -> {train_test_split_position}')
+        # print(f'last_n_folds_pos -> {last_n_folds_pos}')
+
+        # Show progress indicator (every divider folds)
+        if fold_num % divider == 0:
+            print(f'Started fold {fold_num:06}/{fold_nums:06} - '
+                  f'{datetime.now().strftime(dt_format)}')
+        fold_num += 1
+
+        # For each fold
+        # history = data[0:i].copy()
+        # future = data[i: i + n_pred_points].copy()
+
+        history = data[0:i].copy()
+        future = data[i: i + n_pred_points].copy()
+
+        # Split datasets into independent variables dataset columns and dependent variable column
+        y_train = history.pop(target_col)
+        y_test = future.pop(target_col)
+
+        # print(f'history.shape {history.shape}')
+        # print(f'future.shape {future.shape}')
+        # print(history.head(10))
+        # print(future.head(10))
+        # print(y_test.shape)
+        # print(y_test.head(10))
+        # return
+
+        predicted = []
+
+        # Forecast values for n_pred_points (for example: 7-days forecast)
+        for j in range(len(future)):
+            # print(history.tail(5))
+
+            # Fit a model with updated historical data (each time we add a predicted value to the end of history)
+            # https://stackoverflow.com/questions/54136280/sarimax-python-np-linalg-linalg-linalgerror-lu-decomposition-error
+            # model = SARIMAX(endog=history, order=(p, d, q), initialization='approximate_diffuse')
+            # model_fitted = fit_model(endog=history, p=p, d=d, q=q)
+
+            # print(f'j -> {j}')
+            # print(f'type(history) -> {type(history)}')
+            # print(f'history.tail(5) -> {history.tail(5)}')
+            # print(f'model_fitted -> {model_fitted}')
+
+            # print(i)#.iloc[i:i+1,])
+            # print(future.iloc[[j]])
+
+            # print(history.shape)
+            # print(y_train.shape)
+
+            # Get prediction for t+j lag
+            model_fitted = model.fit(history, y_train)
+            yhat = model_fitted.predict(future.iloc[[j]])
+
+            # print(X_test.head())
+            # print(yhat)
+            # return
+
+            # Add prediction value to results
+            predicted.append(yhat)
+
+            # print(f'before: history.tail(2) -> {history.tail(2)}')
+
+            # Create a new row with the next data point index from future
+            # Extend history with the last predicted value (we need an index of this value)
+            history = history.append(future[j: j + 1])
+            # print(f'before2: history.tail(2) -> {history.tail(2)}')
+
+            y_train = y_train.append(y_train[j: j + 1])
+
+            # Replace observed value with predicted value (update data point value at newly created index)
+            # history.loc[future[j: j + 1].index] = [yhat]
+
+            # Take last row
+            # d2 = history.tail(1)
+
+            # In order to replace t-n columns for t=yhat,
+            # we need to calcultate t-n columns
+            df_temp = pd.DataFrame([[yhat]], columns=['t'])
+
+            # Calculate t-n column values for the last row and replace them in the history table
+            for i in range(1, n_lags + 1):
+                history[-1:]['t-' + str(i)] = df_temp['t'].shift(i)
+
+            # print(f'after: history.tail(2) -> {history.tail(2)}')
+
+            # if (j > 2): return
+
+        # Summarize results for the fold
+        # Each row represents next predicted lag
+        # df_fold_observed = future[col_name].copy()  # observed
+        df_fold_observed = y_test.copy()  # observed
+
+        # df_fold_predicted = history[-n_pred_points:].copy()  # predicted
+        df_fold_predicted = pd.DataFrame(predicted)
+        df_fold_predicted.index = df_fold_observed.index
+        df_fold_results = pd.concat([df_fold_observed, df_fold_predicted], axis=1)
+        # print(predicted)
+        ##print(df_fold_observed)
+        # print(df_fold_predicted)
+        # print(df_fold_results)
+        # return
+        df_fold_results.columns = ['observed', 'predicted']
+
+        df_fold_results['error'] = np.abs \
+            (df_fold_results['observed'] - df_fold_results['predicted'])  # error
+        df_fold_results['abs_error'] = np.abs \
+            (df_fold_results['observed'] - df_fold_results['predicted'])  # absolute error
+
+        fold_results.append(df_fold_results)
+        # print(df_fold_results)
+
+    return fold_results
+
+
 def walk_forward_ref_model_validation(data: pd.DataFrame,
                                       col_name: str,
                                       model_type: str,
@@ -45,7 +216,7 @@ def walk_forward_ref_model_validation(data: pd.DataFrame,
                                       rolling_window: int = 4
                                       ):
     """
-    XXXXXXXXXXXXX SAV
+    XXXXXXXXXXXXX SAF, PER, SMA, EMA
     Validates time series using SARIMA family of models using time series walk forward model validation method
     :param data: pandas DataFrame
     :param col_name: time series column name
@@ -58,6 +229,8 @@ def walk_forward_ref_model_validation(data: pd.DataFrame,
     :return: list of data frames with results from each fold
     """
 
+    # TODO
+    # There is a function in w common.py -> split_df_for_ml_modelling_offset (do similar for ts)
     # Take entire dataset and split it to train/test
     # according to train_test_split_position using cut_off_offset
     train_test_split_position = int(len(data) - cut_off_offset)
@@ -163,7 +336,8 @@ def walk_forward_ref_model_validation(data: pd.DataFrame,
 
             # SMA
             elif model_type == 'SMA':
-                yhat = history[col_name].rolling(window=rolling_window).mean()[-1:][0] # moving average
+                yhat = history[col_name].rolling(window=rolling_window).mean()[-1:][
+                    0]  # moving average
 
             # EMA
             elif model_type == 'EMA':

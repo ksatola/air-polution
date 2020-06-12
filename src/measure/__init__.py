@@ -14,6 +14,7 @@ from .validation import (
     walk_forward_ts_model_validation,
     walk_forward_ts_model_validation2,
     walk_forward_ref_model_validation,
+    walk_forward_ml_model_validation,
     get_mean_folds_rmse_for_n_prediction_points,
     prepare_data_for_visualization
 )
