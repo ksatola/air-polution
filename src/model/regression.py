@@ -46,15 +46,15 @@ def perform_grid_search_cv(X_train,
                            num_folds=6,
                            seed=123):
     """
-
-    :param X_train:
-    :param y_train:
-    :param model:
-    :param param_grid:
-    :param scoring:
-    :param num_folds:
-    :param seed:
-    :return:
+    Performs cross-validation hyper-parameters tuning on k-folded dataset
+    :param X_train: observations, independent variables
+    :param y_train: observations, dependent variable
+    :param model: BaseEstimator type of model (sklearn)
+    :param param_grid: dictionary of hyper-parameters with their values
+    :param scoring: sklearn scoring string
+    :param num_folds: number of folds for cross-validation
+    :param seed: random seed
+    :return: None
     """
     kfold = KFold(n_splits=num_folds, random_state=seed)
     grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=scoring, cv=kfold)

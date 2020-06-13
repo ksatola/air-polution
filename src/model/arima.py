@@ -133,9 +133,9 @@ def get_best_arima_params_for_time_series(data: pd.Series,
                 continue
 
     if seasonal:
-        print(best_res)
-        print(f'Best model is SARIMA{best_res[0]}x{best_res[1]} with AIC of {best_aic}')
+        logger.info(best_res)
+        logger.info(f'Best model is SARIMA{best_res[0]}x{best_res[1]} with AIC of {best_aic}')
     else:
-        print(f'Best model is ARIMA{best_res[0]} with AIC of {best_aic}')
+        logger.info(f'Best model is ARIMA{best_res[0]} with AIC of {best_aic}')
 
     return best_res
