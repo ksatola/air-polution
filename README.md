@@ -1,5 +1,5 @@
 # air-pollution
-This is work in progress, for the recent status, see [phase 1 summary](phase01/air-pollution-phase-01.ipnyb). Phase 2 is about to start soon.
+This is work in progress, for the recent status, see [phase 1 summary](https://github.com/ksatola/air-pollution/blob/master/phase01/air-pollution-phase-01.ipynb). Phase 2 is about to start soon.
 
 
 ## TODO:
